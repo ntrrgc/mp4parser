@@ -330,7 +330,6 @@ box_registry = [
 		'mdta': ('QuickTimeMetadataBox', 'Box'),
 		'gmhd': ('BaseMediaInformationHeaderBox', 'Box'),
 		'gmin': ('BaseMediaInfoBox', 'Box'),
-        'ftab': ('FontTableBox', 'Box'),
 	}),
 	({
 		'title': 'Video File Format Specification',
@@ -349,6 +348,26 @@ box_registry = [
 	}, {
 		'emsg': ('DASHEventMessageBox', 'FullBox'),
 	}),
+    ({
+        'name': '3GPP TS 26.245',
+        'title': 'Universal Mobile Telecommunications System (UMTS); LTE; 5G; Transparent end-to-end Packet switched Streaming Service (PSS); Timed text format',
+        'alias': '3GPP Timed Text',
+        'version': '18.0.0 Release 18',
+        'url': 'https://www.etsi.org/deliver/etsi_ts/126200_126299/126245/15.00.00_60/ts_126245v150000p.pdf',
+	}, {
+        'ftab': ('FontTableBox', 'Box'),
+        # TextSampleModifierBox(type) is an empty Box(type)
+        'styl': ('TextStyleBox', 'TextSampleModifierBox'),
+        'hlit': ('TextHighlightBox', 'TextSampleModifierBox'),
+        'hclr': ('TextHighlightColorBox', 'TextSampleModifierBox'),
+        'krok': ('TextKaraokeBox', 'TextSampleModifierBox'),
+        'dlay': ('TextScrollDelayBox', 'TextSampleModifierBox'),
+        'href': ('TextHyperTextBox', 'TextSampleModifierBox'),
+        'tbox': ('TextboxBox', 'TextSampleModifierBox'),
+        'blnk': ('BlinkBox', 'TextSampleModifierBox'),
+        'twrp': ('TextWrapBox', 'TextSampleModifierBox'),
+        'disp': ('DisparityBox', 'TextSampleModifierBox'),
+	})
 ]
 
 

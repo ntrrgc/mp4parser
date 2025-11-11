@@ -140,14 +140,33 @@
                         [text] @ 0x10079, 0x10081 .. 0x100c8 (71)
                             data_reference_index = 1
                             display_flags =
+                                scroll_direction = up
                                 invalid unassigned: 1
-                            font_identifier = 1
-                            [ftab] FontTable @ 0x100a7, 0x100af .. 0x100b4 (5)
-                                00 01 00 01  00                                      .....
-                            [btrt] BitRate @ 0x100b4, 0x100bc .. 0x100c8 (12)
-                                bufferSizeDB = 0
-                                maxBitrate = 142
-                                avgBitrate = 142
+                            horizontal_justification = left
+                            vertical_justification = top
+                            background_color = rgb:#000000 alpha:0x00
+                            default_text_box =
+                                top = 0
+                                left = 0
+                                bottom = 0
+                                right = 0
+                            default_style =
+                                start_char = 0
+                                end_char = 0
+                                font_id = 1
+                                font_size = 0
+                                text_color = rgb:#000000 alpha:0x00
+                            font_table =  =
+                                [ftab] FontTable @ 0x100a7, 0x100af .. 0x100b4 (5)
+                                    entry_count = 1
+                                    ERROR: unexpected EOF (needed 10000, got 1)
+
+                                    00 01 00 01  00                                      .....
+                            default_disparity =
+                                [btrt] BitRate @ 0x100b4, 0x100bc .. 0x100c8 (12)
+                                    bufferSizeDB = 0
+                                    maxBitrate = 142
+                                    avgBitrate = 142
                     [stts] TimeToSample @ 0x100c8, 0x100d0 .. 0x100f0 (32)
                         entry_count = 3
                         [entry   0] [sample =      1, time =      0] sample_count =     1, sample_delta =  1000
@@ -181,6 +200,10 @@
             version = 1
             dummy = 0
             entry_count = 3
-            [entry   1] time=           0 'The one'
-            [entry   2] time=    10000000 'The two'
-            [entry   3] time=    30000000 'Gap and a three'
+            ERROR: unexpected EOF (needed 10000, got 48)
+
+            01 00 00 00  00 00 00 00  03 00 00 00  00 00 00 00   ................
+            00 07 54 68  65 20 6f 6e  65 00 00 00  00 00 98 96   ..The one.......
+            80 07 54 68  65 20 74 77  6f 00 00 00  00 01 c9 c3   ..The two.......
+            80 0f 47 61  70 20 61 6e  64 20 61 20  74 68 72 65   ..Gap and a thre
+            65                                                   e

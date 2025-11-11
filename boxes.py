@@ -2,10 +2,11 @@
 Handlers for each box
 '''
 
+from enum import IntEnum
 from typing import List
 
 from mp4parser import \
-	Parser, max_dump, max_rows, mask, print_hex_dump, args, \
+	Parser, enum_formatter, format_rgba24, max_dump, max_rows, mask, one_line_flags_formatter, parse_box, parse_contents, print_hex_dump, args, \
 	format_time, format_size, format_fraction, decode_language, \
 	parse_boxes, parse_fullbox, \
 	ansi_bold, ansi_dim, ansi_fg1, ansi_fg2
@@ -224,8 +225,7 @@ def format_sdtp_value(x: int) -> str:
 	return ['unknown', 'yes', 'no', ansi_fg1('reserved')][x]
 
 def parse_sample_flags(ps: Parser, name: str):
-	ps.print(f'{name} =')
-	with ps.in_object(), ps.bits(4) as br:
+	with ps.in_object(name), ps.bits(4) as br:
 		ps.reserved('reserved', br.read(4))
 
 		# equivalent meanings as for 'sdtp'
@@ -819,22 +819,74 @@ def parse_ilst_box(ps: Parser):
 def parse_metadata_value_box(btype: str, ps: Parser):
 	parse_boxes(ps)
 
+def parse_tx3g_box_record(ps: Parser):
+	ps.field('top', ps.sint(2))
+	ps.field('left', ps.sint(2))
+	ps.field('bottom', ps.sint(2))
+	ps.field('right', ps.sint(2))
+
+def parse_tx3g_style_record(ps: Parser):
+	ps.field('start_char', ps.int(2))
+	ps.field('end_char', ps.int(2))
+	ps.field('font_id', ps.int(2))
+	ps.field('font_style_flags', ps.int(1), format=one_line_flags_formatter({
+		1: 'bold', 2: 'italic', 4: 'underline',
+	}), default=0)
+	ps.field('font_size', ps.int(1))
+	ps.field('text_color', ps.int(4), format=format_rgba24)
+
+def parse_ftab_box(ps: Parser):
+	# 3GPP Timed Text: FontTableBox
+	ps.field('entry_count', entry_count := ps.int(2))
+	for i in range(entry_count):
+		font_id = ps.int(2)
+		font = ps.pascal_string(1)
+		ps.print(f'[entry {i:3}] font_id={font_id:5} font={font!r}')
+
+def parse_disp_box(ps: Parser):
+	# 3GPP Timed Text: DisparityBox (for stereo vision)
+	ps.field('disparity_shift_in_16th_pel', ps.sint(2))
+
 def parse_tx3g_sample_desc(ps: Parser):
-	ps.print(f'display_flags =')
-	with ps.in_object(), ps.bits(4) as br:
-		ps.field('all_samples_are_forced', br.bit(), default=False)
-		ps.field('some_samples_are_forced', br.bit(), default=False)
-		ps.field('vertical_placement', br.bit(), default=False)
-		ps.reserved('unassigned', br.read())
-	ps.reserved('reserved_0', ps.int(1))
-	ps.reserved('reserved_1', ps.int(1))
-	ps.reserved('reserved_2', ps.int(4))
-	ps.field('default_text_box', ps.int(8), '016x', default=0) # FIXME
-	ps.reserved('reserved_3', ps.int(4))
-	ps.field('font_identifier', ps.int(2))
-	ps.field('font_face', ps.int(1), default=0)
-	ps.field('font_size', ps.int(1), default=0)
-	ps.field('foreground_color', ps.int(4), '08x', default=0) # FIXME
+	with ps.with_flag_bitset('display_flags', 4) as f:
+		# These three flags are defined only in QuickTime
+		ps.field('all_samples_are_forced', f.mask(0x8000_0000), default=False)
+		ps.field('some_samples_are_forced', f.mask(0x4000_0000), default=False)
+		ps.field('vertical_placement', f.mask(0x2000_0000), default=False)
+
+		ps.field('scroll_in', f.mask(0x20), default=False)
+		ps.field('scroll_out', f.mask(0x40), default=False)
+		ps.field('scroll_direction', f.mask(0x180), format=enum_formatter([
+			'up',    # AKA: 'credits style'
+			'left',  # AKA: 'marquee style'
+			'down',
+			'right'
+		]))
+		ps.field('continuous_karaoke', f.mask(0x800), default=False)
+		ps.field('write_text_vertically', f.mask(0x2_0000), default=False)
+		ps.field('fill_text_region', f.mask(0x4_0000), default=False)
+
+		ps.reserved('unassigned', f.remaining_flags)
+
+	ps.field('horizontal_justification', ps.sint(1),
+		format=enum_formatter({0: 'left', 1: 'centered', -1: 'right'}))
+	ps.field('vertical_justification', ps.sint(1),
+		format=enum_formatter({0: 'top', 1: 'centered', -1: 'bottom'}))
+	ps.field('background_color', ps.int(4), format=format_rgba24)
+
+	with ps.in_object('default_text_box'):
+		parse_tx3g_box_record(ps)
+	with ps.in_object('default_style'):
+		parse_tx3g_style_record(ps)
+
+	# The 3GPP Timed Text spec requires this box here.
+	with ps.in_object('font_table = '), ps.in_object():  # FIXME: make parse_box not un-indent
+		parse_box(ps, parse_contents)  # ftab (if well formed)
+	# The 3GPP Timed Text spec v18 does not mark this box as optional, but it
+	# did not exist in previous versions, so I will.
+	if not ps.ended:
+		with ps.in_object('default_disparity'), ps.in_object():  # FIXME: make parse_box not un-indent
+			parse_box(ps, parse_contents)  # disp (if well formed)
 
 	parse_boxes(ps)
 
@@ -842,8 +894,7 @@ def parse_48bit_color(ps: Parser, name: str):
 	ps.field(name, ps.int(6), '012x') # FIXME
 
 def parse_text_sample_desc(ps: Parser):
-	ps.print(f'display_flags =')
-	with ps.in_object(), ps.bits(4) as br:
+	with ps.in_object('display_flags'), ps.bits(4) as br:
 		ps.reserved('unassigned', br.read(32 - 15))
 		ps.field('key_text', br.bit(), default=False)
 		ps.field('anti_alias', br.bit(), default=False)
@@ -954,13 +1005,11 @@ def parse_chpl_box(ps: Parser):
 		# > The absolute timestamp of the chapter, in reference to the master
 		# > timescale and timeline of the F4V file
 		timestamp = ps.int(8)
-		title_size = ps.int(1)
-		title_bytes = ps.bytes(title_size)
 		# The F4V spec makes no mention of character encoding.
 		# VLC seems to assume UTF-8, so I'll go with that.
-		title_str = title_bytes.decode("utf-8", "replace")
+		title = ps.pascal_string(1, "utf-8")
 		if i < max_rows:
-			ps.print(f'[entry {i+1:3}] time={timestamp:12} {title_str!r}')
+			ps.print(f'[entry {i+1:3}] time={timestamp:12} {title!r}')
 	if entry_count > max_rows:
 		ps.print('...')
 

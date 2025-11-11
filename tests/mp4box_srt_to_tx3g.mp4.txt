@@ -1,0 +1,118 @@
+[ftyp] FileType @ 0x0, 0x8 .. 0x14 (12)
+    major_brand = 'isom'
+    minor_version = 00000001
+    - compatible: 'isom'
+[moov] Movie @ 0x14, 0x1c .. 0x34f (819)
+    [mvhd] MovieHeader @ 0x1c, 0x24 .. 0x88 (100)
+        creation_time = 2025-03-20 14:31:46Z
+        modification_time = 2025-03-20 14:31:46Z
+        timescale = 600
+        duration = 121602
+        next_track_ID = 2
+    [trak] Track @ 0x88, 0x90 .. 0x2e7 (599)
+        [tkhd] TrackHeader @ 0x90, 0x98 .. 0xec (84)
+            flags = 000007
+            creation_time = 2025-03-20 14:31:46Z
+            modification_time = 2025-03-20 14:31:46Z
+            track_ID = 1
+            duration = 121602
+            volume = 0.0
+            size = 400.0 × 60.0
+        [mdia] Media @ 0xec, 0xf4 .. 0x2e7 (499)
+            [mdhd] MediaHeader @ 0xf4, 0xfc .. 0x114 (24)
+                creation_time = 2025-03-20 14:31:46Z
+                modification_time = 2025-03-20 14:31:46Z
+                timescale = 1000
+                duration = 202671
+                language = und (Undetermined)
+            [hdlr] Handler @ 0x114, 0x11c .. 0x14b (47)
+                handler_type = 'text', name = 'srt@GPAC2.4-revrelease\x00'
+            [minf] MediaInformation @ 0x14b, 0x153 .. 0x2e7 (404)
+                [nmhd] NullMediaHeader @ 0x153, 0x15b .. 0x15f (4)
+                    00 00 00 00                                          ....
+                [dinf] DataInformation @ 0x15f, 0x167 .. 0x183 (28)
+                    [dref] DataReference @ 0x167, 0x16f .. 0x183 (20)
+                        [url ] DataEntryUrl @ 0x177, 0x17f .. 0x183 (4)
+                            flags = 000001
+                [stbl] SampleTable @ 0x183, 0x18b .. 0x2e7 (348)
+                    [stsd] SampleDescription @ 0x18b, 0x193 .. 0x1db (72)
+                        [tx3g] @ 0x19b, 0x1a3 .. 0x1db (56)
+                            data_reference_index = 1
+                            display_flags =
+                                scroll_direction = up
+                            horizontal_justification = centered
+                            vertical_justification = bottom
+                            background_color = rgb:#000000 alpha:0x00
+                            default_text_box =
+                                top = 0
+                                left = 0
+                                bottom = 60
+                                right = 400
+                            default_style =
+                                start_char = 0
+                                end_char = 0
+                                font_id = 1
+                                font_size = 18
+                                text_color = rgb:#FFFFFF alpha:0xFF
+                            font_table =  =
+                                [ftab] FontTable @ 0x1c9, 0x1d1 .. 0x1db (10)
+                                    entry_count = 1
+                                    ERROR: unexpected EOF (needed 10000, got 6)
+
+                                    00 01 00 01  05 53 65 72  69 66                      .....Serif
+                    [stts] TimeToSample @ 0x1db, 0x1e3 .. 0x243 (96)
+                        entry_count = 11
+                        [entry   0] [sample =      1, time =      0] sample_count =     1, sample_delta = 136612
+                        [entry   1] [sample =      2, time = 136612] sample_count =     1, sample_delta =  2764
+                        [entry   2] [sample =      3, time = 139376] sample_count =     1, sample_delta =   106
+                        [entry   3] [sample =      4, time = 139482] sample_count =     1, sample_delta =  2127
+                        [entry   4] [sample =      5, time = 141609] sample_count =     1, sample_delta = 51727
+                        [entry   5] [sample =      6, time = 193336] sample_count =     1, sample_delta =  1831
+                        [entry   6] [sample =      7, time = 195167] sample_count =     1, sample_delta =  3441
+                        ...
+                        [samples =     11, time = 202671]
+                    [stsc] SampleToChunk @ 0x243, 0x24b .. 0x26b (32)
+                        entry_count = 2
+                        [entry   0] [sample =      1] first_chunk =     1, samples_per_chunk =    1, sample_description_index = 1
+                        [entry   1] [sample =     11] first_chunk =    11, samples_per_chunk =    1, sample_description_index = 1
+                    [stsz] SampleSize @ 0x26b, 0x273 .. 0x2ab (56)
+                        sample_count = 11
+                        [sample      1] sample_size =     2
+                        [sample      2] sample_size =    58
+                        [sample      3] sample_size =     2
+                        [sample      4] sample_size =    24
+                        [sample      5] sample_size =     2
+                        [sample      6] sample_size =    13
+                        [sample      7] sample_size =     2
+                        ...
+                    [stco] ChunkOffset @ 0x2ab, 0x2b3 .. 0x2e7 (52)
+                        entry_count = 11
+                        [chunk     1] offset = 0x000357
+                        [chunk     2] offset = 0x000359
+                        [chunk     3] offset = 0x000393
+                        [chunk     4] offset = 0x000395
+                        [chunk     5] offset = 0x0003ad
+                        [chunk     6] offset = 0x0003af
+                        [chunk     7] offset = 0x0003bc
+                        ...
+    [udta] UserData @ 0x2e7, 0x2ef .. 0x34f (96)
+        [meta] Meta @ 0x2ef, 0x2f7 .. 0x34f (88)
+            [hdlr] Handler @ 0x2fb, 0x303 .. 0x31c (25)
+                handler_type = 'mdir', name = '\x00'
+            [ilst] MetadataItemList @ 0x31c, 0x324 .. 0x34f (43)
+                [©too] @ 0x324, 0x32c .. 0x34f (35)
+                    [data] @ 0x32c, 0x334 .. 0x34f (27)
+                        value = 'GPAC-2.4-revrelease'
+[mdat] MediaData @ 0x34f, 0x357 .. 0x3f5 (158)
+    00 00 00 38  53 65 6e 61  74 6f 72 2c  20 77 65 27   ...8Senator, we'
+    72 65 20 6d  61 6b 69 6e  67 0a 6f 75  72 20 66 69   re making.our fi
+    6e 61 6c 20  61 70 70 72  6f 61 63 68  20 69 6e 74   nal approach int
+    6f 20 43 6f  72 75 73 63  61 6e 74 2e  00 00 00 16   o Coruscant.....
+    56 65 72 79  20 67 6f 6f  64 2c 20 4c  69 65 75 74   Very good, Lieut
+    65 6e 61 6e  74 2e 00 00  00 0b 57 65  20 6d 61 64   enant.....We mad
+    65 20 69 74  2e 00 00 00  14 49 20 67  75 65 73 73   e it.....I guess
+    ...
+[free] FreeSpace @ 0x3f5, 0x3fd .. 0x42d (48)
+    49 73 6f 4d  65 64 69 61  20 46 69 6c  65 20 50 72   IsoMedia File Pr
+    6f 64 75 63  65 64 20 77  69 74 68 20  47 50 41 43   oduced with GPAC
+    20 32 2e 34  2d 72 65 76  72 65 6c 65  61 73 65 00    2.4-revrelease.

@@ -3,6 +3,10 @@
 Core parsing logic
 '''
 
+from __future__ import annotations
+from collections.abc import Mapping, Sequence
+from functools import reduce
+import operator
 import sys
 import mmap
 import itertools
@@ -136,11 +140,24 @@ class MVIO:
 		return int.from_bytes(self.read(n), 'big')
 
 	def string(self, encoding='utf-8') -> str:
+		# FIXME: rename to c_string?
 		data = self.peek()
 		if (size := data.tobytes().find(b'\0')) == -1:
 			raise EOFError('EOF while reading string')
 		self.pos += size + 1
-		return data[:size].tobytes().decode(encoding)
+		return data[:size].tobytes().decode(encoding, errors='replace')
+
+	def pascal_string(self, prefix_size_bytes: int, encoding: str = 'utf-8') -> str:
+		self.read(10000)
+		try:
+			string_length = self.int(prefix_size_bytes)
+		except EOFError:
+			raise EOFError('EOF while reading string size')
+		if self.remaining < string_length:
+			raise EOFError(f'EOF before end of string, expected {string_length} bytes, '
+				f'found {self.remaining} bytes: {self.read(self.remaining)}')
+		data = self.bytes(string_length)
+		return data.decode(encoding, errors='replace')
 
 	@contextmanager
 	def bits(self, n = -1):
@@ -245,7 +262,9 @@ class Parser(MVIO):
 	# JSON primitives (they don't do much right now)
 
 	@contextmanager
-	def in_object(self):
+	def in_object(self, obj_name: Optional[str] = None):
+		if obj_name:
+			self.print(f'{obj_name} =')
 		self.indent += 1
 		self.prefix = ' ' * (self.indent * indent_n)
 		try:
@@ -255,6 +274,12 @@ class Parser(MVIO):
 			self.prefix = ' ' * (self.indent * indent_n)
 
 	@contextmanager
+	def with_flag_bitset(self, name: str, byte_size: int):
+		value = self.int(byte_size)
+		with self.in_object(name):
+			yield FlagBitSet(byte_size, value)
+
+	@contextmanager
 	def in_list(self):
 		yield self
 
@@ -262,6 +287,49 @@ class Parser(MVIO):
 	def in_list_item(self):
 		with self.in_object():
 			yield self
+
+def ffs(x):
+	# https://stackoverflow.com/a/36059264
+	"""Returns the index, counting from 0, of the
+	least significant set bit in `x`.
+	"""
+	return (x & -x).bit_length() - 1
+
+class FlagBitSet:
+	def __init__(self, byte_size: int, original_flags: int) -> None:
+		self.byte_size = byte_size
+		self.original_flags = original_flags
+		self.remaining_flags = original_flags
+	def bit_from_mask(self, mask: int) -> bool:
+		assert mask.bit_count() == 1, f"Mask should only have one bit: {mask:x}"
+		bit_value = bool(self.original_flags & mask)
+		self.remaining_flags &= ~mask
+		return bit_value
+	def mask(self, mask: int) -> int:
+		"""Read bits set in the mask and return them as a integer.
+		Bits that are zero in the mask are not written to the result.
+
+		Example:
+		value  = 0b1000_1101
+		mask   = 0b1100_1111
+		Result:    0b11_1101
+		"""
+		if mask <= 0:
+			raise ValueError("bit_mask must not be positive non-zero")
+		if mask >= 256 ** self.byte_size:
+			raise ValueError("bit_mask is larger than the value being read")
+		self.remaining_flags &= ~mask
+
+		out_bit_ix = 0
+		ret = 0
+		remaining_mask = mask
+		remaining_val = self.original_flags
+		while (shift_amount := ffs(remaining_mask)) >= 0:
+			ret |= (remaining_val >> shift_amount) << out_bit_ix
+			remaining_val >>= (shift_amount + 1)
+			remaining_mask >>= (shift_amount + 1)
+		return ret
+
 
 # FIXME: display errors more nicely (last two frames, type name, you know)
 
@@ -331,9 +399,44 @@ def format_size(x: Union[Tuple[int, int], Tuple[float, float]]):
 	width, height = x
 	return f'{width} × {height}'
 
+def format_rgba24(rgba: int):
+	assert rgba < 2 ** 32
+	r = rgba >> 24
+	g = (rgba >> 16) & 0xFF
+	b = (rgba >> 8) & 0xFF
+	a = rgba & 0xFF
+	return f'rgb:#{r:02X}{g:02X}{b:02X} alpha:0x{a:02X}'
+
 def format_time(x: int) -> str:
 	ts = datetime.fromtimestamp(x - 2082844800, timezone.utc)
 	return ts.isoformat(' ', 'seconds').replace('+00:00', 'Z')
+
+def enum_formatter(enum_spec: Sequence[str] | Mapping[int, str]) -> Callable[[int], str]:
+	def format_enum(n: int) -> str:
+		try:
+			return enum_spec[n]
+		except (KeyError, IndexError):
+			return f'Unknown ({n:x})'
+	return format_enum
+
+def one_line_flags_formatter(
+	flags_spec: Mapping[int, str],
+	repr_no_flags: str = 'default'
+) -> Callable[[int], str]:
+	all_flags = reduce(operator.or_, flags_spec.keys(), 0)
+	def format_one_line_flags(n: int) -> str:
+		strings = [
+			name
+			for mask, name in flags_spec.items()
+			if mask & n
+		]
+		if (unknown_flags := n & ~all_flags):
+			strings.append(f'unknown(0x{unknown_flags:x})')
+		if not strings:
+			strings.append(repr_no_flags)
+		return '+'.join(strings)
+	return format_one_line_flags
+
 
 def decode_language(data: bytes) -> Optional[str]:
 	''' decode a (2-byte) packed ISO 639-2/T code '''
@@ -430,7 +533,6 @@ def parse_fullbox(ps: Parser, max_version=0, known_flags=0, default_version=0, d
 		for k, v, d, f in fields if show_defaults or v != d ]
 	if fields: ps.print(ansi_fg1(', ').join(fields))
 	return version, flags
-
 
 if __name__ == '__main__':
 	main()
