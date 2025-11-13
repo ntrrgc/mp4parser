@@ -148,7 +148,6 @@ class MVIO:
 		return data[:size].tobytes().decode(encoding, errors='replace')
 
 	def pascal_string(self, prefix_size_bytes: int, encoding: str = 'utf-8') -> str:
-		self.read(10000)
 		try:
 			string_length = self.int(prefix_size_bytes)
 		except EOFError:

@@ -57,9 +57,7 @@
                             font_table =  =
                                 [ftab] FontTable @ 0x1c9, 0x1d1 .. 0x1db (10)
                                     entry_count = 1
-                                    ERROR: unexpected EOF (needed 10000, got 6)
-
-                                    00 01 00 01  05 53 65 72  69 66                      .....Serif
+                                    [entry   0] font_id=    1 font='Serif'
                     [stts] TimeToSample @ 0x1db, 0x1e3 .. 0x243 (96)
                         entry_count = 11
                         [entry   0] [sample =      1, time =      0] sample_count =     1, sample_delta = 136612
