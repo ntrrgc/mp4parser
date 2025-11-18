@@ -132,17 +132,23 @@ def parse_video_sample_entry_contents(btype: str, ps: Parser, version: int):
 def parse_audio_sample_entry_contents(btype: str, ps: Parser, version: int):
 	assert version <= 1, 'invalid version'
 
-	if version == 0:
-		ps.reserved('reserved_1_2', ps.bytes(2))
-	else:
-		ps.reserved('entry_version', ps.int(2), 1)
-	ps.reserved('reserved_1', ps.bytes(6))
+	ps.field('entry_version', entry_version := ps.int(2), default=version)
+	if entry_version >= 2:
+		raise AssertionError(f'Unsupported audio sample entry version: {entry_version}')
+	ps.field('revision_level', ps.int(2), default=0)
+	ps.field('vendor', ps.int(4), default=0)
 
 	ps.field('channelcount', ps.int(2), default=(2 if version == 0 else None))
 	ps.field('samplesize', ps.int(2), default=16)
-	ps.reserved('pre_defined_1', ps.int(2))
-	ps.reserved('reserved_2', ps.int(2))
+	ps.field('compression_id', ps.sint(2), default=0)
+	ps.field('packet_size', ps.int(2), default=0)
 	ps.field('samplerate', ps.fixed16(), default=(None if version == 0 else 1))
+
+	if entry_version == 1:
+		ps.field("samples_per_packet", ps.int(4), default=0)
+		ps.field("bytes_per_packet", ps.int(4), default=0)
+		ps.field("bytes_per_frame", ps.int(4), default=0)
+		ps.field("bytes_per_sample", ps.int(4), default=0)
 
 	parse_boxes(ps)
 
@@ -945,6 +951,7 @@ def parse_data_box(ps: Parser):
 		ps.field_dump('value')
 
 def parse_udta_box(ps: Parser):
+	parse_boxes(ps)
 	# From the QuickTime spec:
 	# > For historical reasons, the data list is optionally terminated by a
 	# > 32-bit integer set to 0.

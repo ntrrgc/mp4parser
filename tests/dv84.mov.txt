@@ -127,7 +127,7 @@
                                 colour_type = 'nclc'
                                 data = @ 0x3722c0 .. 0x3722c6 (6)
                                   00 09 00 12  00 09                                   ......
-                            ERROR: unexpected EOF (needed 4, got 0)
+                            ERROR: 4 unparsed trailing bytes
 
                             00 00 00 00  00 00 00 01  00 00 00 00  00 00 00 00   ................
                             00 00 02 00  00 00 02 00  07 80 04 38  00 48 00 00   ...........8.H..
@@ -262,19 +262,35 @@
                     [stsd] SampleDescription @ 0x372ac1, 0x372ac9 .. 0x372b60 (151)
                         [mp4a] MP4AudioSampleEntry @ 0x372ad1, 0x372ad9 .. 0x372b60 (135)
                             data_reference_index = 1
-                            invalid reserved_1_2: b'\x00\x01'
-                            invalid pre_defined_1: 65534
+                            entry_version = 1
+                            compression_id = -2
                             samplerate = 44100.0
-                            ERROR: invalid type '\x00\x00\x00\x01'
-
-                            00 00 00 00  00 00 00 01  00 01 00 00  00 00 00 00   ................
-                            00 02 00 10  ff fe 00 00  ac 44 00 00  00 00 04 00   .........D......
-                            00 00 00 01  00 00 00 02  00 00 00 02  00 00 00 5b   ...............[
-                            77 61 76 65  00 00 00 0c  66 72 6d 61  6d 70 34 61   wave....frmamp4a
-                            00 00 00 0c  6d 70 34 61  00 00 00 00  00 00 00 33   ....mp4a.......3
-                            65 73 64 73  00 00 00 00  03 80 80 80  22 00 00 00   esds........"...
-                            04 80 80 80  14 40 14 00  18 00 00 02  ee 00 00 00   .....@..........
-                            ...
+                            samples_per_packet = 1024
+                            bytes_per_packet = 1
+                            bytes_per_frame = 2
+                            bytes_per_sample = 2
+                            [wave] siDecompressionParam @ 0x372b05, 0x372b0d .. 0x372b60 (83)
+                                [frma] OriginalFormat @ 0x372b0d, 0x372b15 .. 0x372b19 (4)
+                                    data_format = 'mp4a'
+                                [mp4a] MP4AudioSampleEntry @ 0x372b19, 0x372b21 .. 0x372b25 (4)
+                                    00 00 00 00                                          ....
+                                [esds] ESD @ 0x372b25, 0x372b2d .. 0x372b58 (43)
+                                    [3] ES_Descriptor -> BaseDescriptor (4 length bytes)
+                                        ES_ID = 0
+                                        streamPriority = 0
+                                        [4] DecoderConfigDescriptor -> BaseDescriptor (4 length bytes)
+                                            objectTypeIndication = 64 (AAC)
+                                            streamType = 5 (AudioStream)
+                                            upStream = False
+                                            invalid reserved: 0
+                                            bufferSizeDB = 6144
+                                            maxBitrate = 192000
+                                            avgBitrate = 0
+                                            [5] DecoderSpecificInfo -> BaseDescriptor (4 length bytes)
+                                                12 10                                                ..
+                                        [6] SLConfigDescriptor -> BaseDescriptor (4 length bytes)
+                                            predefined = 2 (Reserved for use in MP4 files)
+                                [00 00 00 00] Terminator @ 0x372b58, 0x372b60 .. 0x372b60 (0)
                     [stts] TimeToSample @ 0x372b60, 0x372b68 .. 0x372b78 (16)
                         entry_count = 1
                         [entry   0] [sample =      1, time =      0] sample_count =   146, sample_delta =  1024
@@ -528,7 +544,8 @@
         (1016 empty bytes)
     [meta] Meta @ 0x373d66, 0x373d6e .. 0x3742c6 (1368)
         flags = 000022
-        ERROR: invalid type '\x00\x00\x00\x00'
+        [00 00 00 00] Terminator @ 0x373d72, 0x373d7a .. 0x689ba9e4 (1751411818)
+        ERROR: unexpected EOF (needed 1751411818, got 1356)
 
         00 00 00 22  68 64 6c 72  00 00 00 00  00 00 00 00   ..."hdlr........
         6d 64 74 61  00 00 00 00  00 00 00 00  00 00 00 00   mdta............

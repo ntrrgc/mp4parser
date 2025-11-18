@@ -376,7 +376,7 @@ def parse_box_header(ps: Parser):
 	start = ps.pos
 	length = ps.int(4)
 	btype = ps.fourcc()
-	assert btype.isprintable(), f'invalid type {repr(btype)}'
+	assert btype.isprintable() or btype == '\x00\x00\x00\x00', f'invalid type {repr(btype)}'
 
 	last_box, large_size = False, False
 	if length == 0:
@@ -395,7 +395,7 @@ def parse_box_header(ps: Parser):
 def parse_boxes(ps: Parser, contents_fn: Optional[Callable[[str, Parser], T]]=None) -> List[T]:
 	result = []
 	with ps.in_list():
-		while not ps.ended:
+		while ps.remaining > 4:  # accept TerminatorBox but specifically avoid reading null trailers here
 			with ps.in_list_item():
 				result.append(parse_box(ps, contents_fn or parse_contents))
 	return result
@@ -415,13 +415,15 @@ def parse_box(ps: Parser, contents_fn: Callable[[str, Parser], T]) -> T:
 	if large_size:
 		offset_text = ' (large size)' + offset_text
 	type_label = btype
-	if len(btype) != 4: # it's a UUID
+	if btype == '\x00\x00\x00\x00':
+		type_label = '00 00 00 00'
+	elif len(btype) != 4: # it's a UUID
 		type_label = f'UUID {btype}'
 	ps.print(ansi_bold(f'[{type_label}]') + name_text + offset_text + length_text, header=True)
 	with ps.subparser(length) as data, data.handle_errors():
 		return contents_fn(btype, data)
 
-nesting_boxes = { 'moov', 'trak', 'mdia', 'minf', 'dinf', 'stbl', 'mvex', 'moof', 'traf', 'mfra', 'meco', 'edts', 'udta', 'sinf', 'schi', 'gmhd', 'cmov' }
+nesting_boxes = { 'moov', 'trak', 'mdia', 'minf', 'dinf', 'stbl', 'mvex', 'moof', 'traf', 'mfra', 'meco', 'edts', 'udta', 'sinf', 'schi', 'gmhd', 'cmov', 'wave' }
 # metadata?
 nesting_boxes |= { 'aART', 'trkn', 'covr', '----' }
 

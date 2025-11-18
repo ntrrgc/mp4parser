@@ -161,7 +161,7 @@
                             00 00 00 01                                          ....
                 [stbl] SampleTable @ 0xdb4, 0xdbc .. 0xf1c (352)
                     [stsd] SampleDescription @ 0xdbc, 0xdc4 .. 0xe00 (60)
-                        [twos] @ 0xdcc, 0xdd4 .. 0xe00 (44)
+                        [twos] TwosComplementAudioSampleEntry @ 0xdcc, 0xdd4 .. 0xe00 (44)
                             data_reference_index = 1
                             sample_entry_version = 1
                             temporal_quality = 65544

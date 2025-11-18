@@ -115,7 +115,7 @@ def parse_DecoderConfigDescriptor_descriptor(ps: Parser):
 	with ps.bits(4) as br:
 		ps.field('streamType', br.read(6), describe=format_stream_type)
 		ps.field('upStream', br.bit())
-		ps.reserved('reserved', br.read(1), 1)
+		ps.reserved('reserved', br.read(1), 1)  # not always 1, unknown why
 		ps.field('bufferSizeDB', br.read(24))
 	ps.field('maxBitrate', ps.int(4))
 	ps.field('avgBitrate', ps.int(4))
