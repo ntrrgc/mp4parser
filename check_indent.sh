@@ -8,8 +8,7 @@ echo stderr is logged >&2
 mkdir /tmp/testing_rg
 pushd /tmp/testing_rg
 echo miau > file
-yes | sudo apt-get install strace
-strace -e '%file' rg miau
+strace --follow-forks -e '%file' rg miau
 popd
 
 rg trun
