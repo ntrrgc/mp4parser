@@ -12,6 +12,6 @@ strace --follow-forks -e '%file' rg miau </dev/null
 popd
 
 rg trun
-rg -tpy '^\t* +'; echo $?;
+rg -tpy '^\t* +' </dev/null; echo $?;
 hexdump -C test.py
 exit 123
