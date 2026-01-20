@@ -1,6 +1,17 @@
 #!/bin/bash
+set +x
 pwd
 which rg
+echo stdout is logged
+echo stderr is logged >&2
+
+mkdir /tmp/testing_rg
+pushd /tmp/testing_rg
+echo miau > file
+yes | sudo apt-get install strace
+strace -e '%file' rg miau
+popd
+
 rg trun
 rg -tpy '^\t* +'; echo $?;
 hexdump -C test.py
