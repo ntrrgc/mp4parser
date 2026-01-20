@@ -8,7 +8,7 @@ echo stderr is logged >&2
 mkdir /tmp/testing_rg
 pushd /tmp/testing_rg
 echo miau > file
-strace --follow-forks -e '%file' rg miau
+strace --follow-forks -e '%file' rg miau </dev/null
 popd
 
 rg trun
