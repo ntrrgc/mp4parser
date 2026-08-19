@@ -58,8 +58,10 @@ def parse_hdlr_box(ps: Parser):
 
 	ps.field('component_flags', ps.int(4), hex_formatter(4), default=0)
 	ps.field('component_flags_mask', ps.int(4), hex_formatter(4), default=0)
-	# ISO BMFF changed the string representation too!
-	ps.field('name', ps.pascal_string(1) if style == 'QuickTime' else ps.string(), default='')
+	# 'name' is not an optional field but in some files it is missing anyway.
+	if ps.remaining:
+		# ISO BMFF changed the string representation too!
+		ps.field('name', ps.pascal_string(1) if style == 'QuickTime' else ps.string(), default='')
 
 	# For stsd parsing we only care about media handlers (mhlr), not QuickTime data handlers (dhlr).
 	if style == "ISO BMFF" or component_type == "mhlr":

@@ -136,10 +136,6 @@
                 component_manufacturer = 'appl'
                 component_flags = 0x40000000
                 component_flags_mask = 0x0001004c
-                ERROR: EOF while reading string size
-
-                00 00 00 00  6d 68 6c 72  73 6f 75 6e  61 70 70 6c   ....mhlrsounappl
-                40 00 00 00  00 01 00 4c                             @......L
             [free] FreeSpace @ 0xd25, 0xd2d .. 0xd3f (18)
                 43 6c 69 70  70 65 64 20  70 72 65 76  2e 20 62 6f   Clipped prev. bo
                 78 21                                                x!
@@ -160,11 +156,11 @@
                     [stsd] SampleDescription @ 0xdbc, 0xdc4 .. 0xe00 (60)
                         [twos] @ 0xdcc, 0xdd4 .. 0xe00 (44)
                             data_reference_index = 1
-                            invalid reserved: b'\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01\x00\x08\x00\x00\x00\x00'
-                            size = 11025 × 0
-                            resolution = 0.0 × 0.0
-                            frame_count = 0
-                            ERROR: unexpected EOF (needed 32, got 2)
+                            invalid reserved_1_2: b'\x00\x01'
+                            channelcount = 1
+                            samplesize = 8
+                            samplerate = 11025.0
+                            ERROR: invalid type '\x00\x00\x00\x00'
 
                             00 00 00 00  00 00 00 01  00 01 00 00  00 00 00 00   ................
                             00 01 00 08  00 00 00 00  2b 11 00 00  00 00 00 00   ........+.......

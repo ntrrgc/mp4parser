@@ -1,0 +1,111 @@
+[ftyp] FileType @ 0x0, 0x8 .. 0x24 (28)
+    major_brand = 'mp41'
+    minor_version = 00000000
+    - compatible: 'iso8'
+    - compatible: 'isom'
+    - compatible: 'mp41'
+    - compatible: 'dash'
+    - compatible: 'cmfc'
+[moov] Movie @ 0x24, 0x2c .. 0x338 (780)
+    [mvhd] MovieHeader @ 0x2c, 0x34 .. 0x98 (100)
+        creation_time = 2026-06-17 16:09:51Z
+        modification_time = 2026-06-17 16:09:51Z
+        timescale = 44100
+        duration = 0
+        next_track_ID = 2
+    [meta] Meta @ 0x98, 0xa0 .. 0x124 (132)
+        [hdlr] Handler @ 0xa4, 0xac .. 0xc4 (24)
+            handler_type = 'ID32'
+        [ID32] ID3v2 @ 0xc4, 0xcc .. 0x124 (88)
+            language = eng (English)
+            ID3v2 data = @ 0xd2 .. 0x124 (82)
+              49 44 33 04  00 00 00 00  00 48 50 52  49 56 00 00   ID3......HPRIV..
+              00 3e 00 00  68 74 74 70  73 3a 2f 2f  67 69 74 68   .>..https://gith
+              75 62 2e 63  6f 6d 2f 73  68 61 6b 61  2d 70 72 6f   ub.com/shaka-pro
+              6a 65 63 74  2f 73 68 61  6b 61 2d 70  61 63 6b 61   ject/shaka-packa
+              67 65 72 00  76 33 2e 32  2e 30 2d 72  65 6c 65 61   ger.v3.2.0-relea
+              73 65                                                se
+    [trak] Track @ 0x124, 0x12c .. 0x300 (468)
+        [tkhd] TrackHeader @ 0x12c, 0x134 .. 0x188 (84)
+            flags = 000007
+            creation_time = 2026-06-17 16:09:51Z
+            modification_time = 2026-06-17 16:09:51Z
+            track_ID = 1
+            duration = 0
+        [mdia] Media @ 0x188, 0x190 .. 0x2dc (332)
+            [mdhd] MediaHeader @ 0x190, 0x198 .. 0x1b0 (24)
+                creation_time = 2026-06-17 16:09:51Z
+                modification_time = 2026-06-17 16:09:51Z
+                timescale = 44100
+                duration = 0
+                language = und (Undetermined)
+            [hdlr] Handler @ 0x1b0, 0x1b8 .. 0x1dd (37)
+                handler_type = 'soun'
+                name = 'SoundHandler'
+            [minf] MediaInformation @ 0x1dd, 0x1e5 .. 0x2dc (247)
+                [dinf] DataInformation @ 0x1e5, 0x1ed .. 0x209 (28)
+                    [dref] DataReference @ 0x1ed, 0x1f5 .. 0x209 (20)
+                        [url ] DataEntryUrl @ 0x1fd, 0x205 .. 0x209 (4)
+                            flags = 000001
+                [stbl] SampleTable @ 0x209, 0x211 .. 0x2cc (187)
+                    [stsd] SampleDescription @ 0x211, 0x219 .. 0x26e (85)
+                        [mp4a] MP4AudioSampleEntry @ 0x221, 0x229 .. 0x26e (69)
+                            data_reference_index = 1
+                            samplerate = 44100.0
+                            [esds] ESD @ 0x245, 0x24d .. 0x26e (33)
+                                [3] ES_Descriptor -> BaseDescriptor
+                                    ES_ID = 0
+                                    streamPriority = 0
+                                    [4] DecoderConfigDescriptor -> BaseDescriptor
+                                        objectTypeIndication = 64 (AAC)
+                                        streamType = 5 (AudioStream)
+                                        upStream = False
+                                        bufferSizeDB = 0
+                                        maxBitrate = 70498
+                                        avgBitrate = 70498
+                                        [5] DecoderSpecificInfo -> BaseDescriptor
+                                            2b 92 08 00                                          +...
+                                    [6] SLConfigDescriptor -> BaseDescriptor
+                                        predefined = 2 (Reserved for use in MP4 files)
+                    [stts] TimeToSample @ 0x26e, 0x276 .. 0x27e (8)
+                        entry_count = 0
+                        [samples =      0, time =      0]
+                    [stsc] SampleToChunk @ 0x27e, 0x286 .. 0x28e (8)
+                        entry_count = 0
+                    [stsz] SampleSize @ 0x28e, 0x296 .. 0x2a2 (12)
+                        sample_count = 0
+                    [stco] ChunkOffset @ 0x2a2, 0x2aa .. 0x2b2 (8)
+                        entry_count = 0
+                    [sgpd] SampleGroupDescription @ 0x2b2, 0x2ba .. 0x2cc (18)
+                        version = 1
+                        grouping_type = 'roll'
+                        default_length = 2
+                        description = @ 0x2ca, 0x2ca .. 0x2cc (2)
+                          ff ff                                                ..
+                [smhd] SoundMediaHeader @ 0x2cc, 0x2d4 .. 0x2dc (8)
+        [edts] Edit @ 0x2dc, 0x2e4 .. 0x300 (28)
+            [elst] EditList @ 0x2e4, 0x2ec .. 0x300 (20)
+                entry_count = 1
+                [edit segment   0] duration =      0, media_time =   5058, media_rate = 1.0
+    [mvex] MovieExtends @ 0x300, 0x308 .. 0x338 (48)
+        [mehd] MovieExtendsHeader @ 0x308, 0x310 .. 0x318 (8)
+            fragment_duration = 563074
+        [trex] TrackExtends @ 0x318, 0x320 .. 0x338 (24)
+            track_ID = 1
+            default_sample_description_index = 1
+            default_sample_duration = 2048
+            default_sample_size = 0
+            default_sample_flags =
+[sidx] SegmentIndex @ 0x338, 0x340 .. 0x3ac (108)
+    reference_ID = 1
+    timescale = 44100
+    earliest_presentation_time = 0
+    first_offset = 0
+    reference_count = 7
+    [reference   0] type = 0, size = 18518, duration = 89150, starts_with_SAP = 1, SAP_type = 1, SAP_delta_time = 0
+    [reference   1] type = 0, size = 17358, duration = 88064, starts_with_SAP = 1, SAP_type = 1, SAP_delta_time = 0
+    [reference   2] type = 0, size = 19575, duration = 88064, starts_with_SAP = 1, SAP_type = 1, SAP_delta_time = 0
+    [reference   3] type = 0, size = 19768, duration = 88064, starts_with_SAP = 1, SAP_type = 1, SAP_delta_time = 0
+    [reference   4] type = 0, size = 18039, duration = 88064, starts_with_SAP = 1, SAP_type = 1, SAP_delta_time = 0
+    [reference   5] type = 0, size = 15831, duration = 88064, starts_with_SAP = 1, SAP_type = 1, SAP_delta_time = 0
+    [reference   6] type = 0, size = 5504, duration = 28546, starts_with_SAP = 1, SAP_type = 1, SAP_delta_time = 0
